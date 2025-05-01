@@ -40,12 +40,17 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      await loginUser({
+      const result = await loginUser({
         email: values.email,
         password: values.password,
       })
 
-      router.push("/dashboard")
+      // Redirect based on role
+      if (result.role === "admin") {
+        router.push("/admin")
+      } else {
+        router.push("/dashboard")
+      }
     } catch (error) {
       toast({
         title: "Error",

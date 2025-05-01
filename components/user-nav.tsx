@@ -14,7 +14,11 @@ import {
 import { useRouter } from "next/navigation"
 import { logoutUser } from "@/lib/actions/auth-actions"
 
-export function UserNav() {
+interface UserNavProps {
+  isAdmin?: boolean
+}
+
+export function UserNav({ isAdmin = false }: UserNavProps) {
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -41,8 +45,14 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/dashboard")}>Dashboard</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>Settings</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push(isAdmin ? "/admin" : "/dashboard")}>Dashboard</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push(isAdmin ? "/admin/settings" : "/dashboard/settings")}>
+            Settings
+          </DropdownMenuItem>
+          {isAdmin && (
+            <DropdownMenuItem onClick={() => router.push("/dashboard")}>Switch to Customer View</DropdownMenuItem>
+          )}
+          {!isAdmin && <DropdownMenuItem onClick={() => router.push("/admin")}>Admin Dashboard</DropdownMenuItem>}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
