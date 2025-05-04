@@ -1,11 +1,15 @@
-// A simple utility to generate license keys
+// A utility to generate license keys
 // In a real app, you would use a more secure method
 
-export function generateLicenseKey(): string {
-  const prefix = "LIC"
-  const segments = [generateRandomString(4), generateRandomString(4), generateRandomString(4), generateRandomString(4)]
+export function generateLicenseKeyString(): string {
+  const prefix = "ECOMPRIA"
+  const segments = [generateRandomString(4), generateRandomString(4), generateRandomString(4)]
 
   return `${prefix}-${segments.join("-")}`
+}
+
+export function generateLicenseKey(): string {
+  return generateLicenseKeyString()
 }
 
 function generateRandomString(length: number): string {

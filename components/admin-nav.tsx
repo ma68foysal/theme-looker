@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Users, Key, Settings, ShieldAlert } from "lucide-react"
+import { LayoutDashboard, Users, Key, Settings, ShieldAlert, Plus, ShoppingCart, FileText } from "lucide-react"
 
 export function AdminNav() {
   const pathname = usePathname()
@@ -21,9 +21,24 @@ export function AdminNav() {
       icon: Users,
     },
     {
+      title: "Orders",
+      href: "/admin/orders",
+      icon: ShoppingCart,
+    },
+    {
       title: "Licenses",
       href: "/admin/licenses",
       icon: Key,
+    },
+    {
+      title: "Generate License",
+      href: "/admin/licenses/generate",
+      icon: Plus,
+    },
+    {
+      title: "Logs",
+      href: "/admin/logs",
+      icon: FileText,
     },
     {
       title: "Settings",

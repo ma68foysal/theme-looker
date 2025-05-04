@@ -22,6 +22,10 @@ const formSchema = z
     email: z.string().email({
       message: "Please enter a valid email address.",
     }),
+    licenseKey: z
+      .string()
+      .min(1, "License key is required")
+      .regex(/^ECOMPRIA-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/, "Invalid license key format"),
     password: z.string().min(8, {
       message: "Password must be at least 8 characters.",
     }),
@@ -42,6 +46,7 @@ export default function RegisterPage() {
     defaultValues: {
       name: "",
       email: "",
+      licenseKey: "",
       password: "",
       confirmPassword: "",
     },
@@ -54,6 +59,7 @@ export default function RegisterPage() {
       await registerUser({
         name: values.name,
         email: values.email,
+        licenseKey: values.licenseKey,
         password: values.password,
       })
 
@@ -62,7 +68,7 @@ export default function RegisterPage() {
         description: "Your account has been created successfully.",
       })
 
-      router.push("/login")
+      router.push("/onboarding")
     } catch (error) {
       toast({
         title: "Error",
@@ -80,7 +86,7 @@ export default function RegisterPage() {
         <ShieldCheck className="h-6 w-6" />
         <span className="font-semibold">ThemeLock</span>
       </Link>
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
           <p className="text-sm text-muted-foreground">Enter your information below to create your account</p>
@@ -108,6 +114,19 @@ export default function RegisterPage() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input type="email" placeholder="john@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="licenseKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>License Key</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ECOMPRIA-XXXX-XXXX-XXXX" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

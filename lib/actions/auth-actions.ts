@@ -10,6 +10,7 @@ import { z } from "zod"
 interface RegisterUserParams {
   name: string
   email: string
+  licenseKey: string
   password: string
 }
 
@@ -23,6 +24,7 @@ export async function registerUser(params: RegisterUserParams) {
   const schema = z.object({
     name: z.string().min(2),
     email: z.string().email(),
+    licenseKey: z.string().regex(/^ECOMPRIA-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/, "Invalid license key format"),
     password: z.string().min(8),
   })
 
@@ -32,11 +34,41 @@ export async function registerUser(params: RegisterUserParams) {
   }
 
   // In a real app, you would:
-  // 1. Check if user already exists
-  // 2. Hash the password
-  // 3. Store user in database
+  // 1. Verify the license key against your database
+  // 2. Check if user already exists
+  // 3. Hash the password
+  // 4. Store user in database
 
-  // For demo purposes, we'll just simulate a successful registration
+  // For demo purposes, we'll just set cookies
+  cookies().set("auth-token", "demo-token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+    path: "/",
+  })
+
+  cookies().set("user-role", "customer", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+    path: "/",
+  })
+
+  cookies().set("license-key", params.licenseKey, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    path: "/",
+  })
+
+  // Set onboarding step to 1
+  cookies().set("onboarding-step", "1", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+    path: "/",
+  })
+
   return { success: true }
 }
 
@@ -81,6 +113,7 @@ export async function loginUser(params: LoginUserParams) {
 
 export async function logoutUser() {
   cookies().delete("auth-token")
+  cookies().delete("user-role")
   return { success: true }
 }
 
